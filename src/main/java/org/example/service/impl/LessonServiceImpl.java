@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.exception.LessonNotFoundException;
 import org.example.model.Lesson;
+import org.example.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;
@@ -16,19 +18,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class LessonService {
+public class LessonServiceImpl implements LessonService {
 
     private final String lessonsFilePath;
 
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public LessonService(String lessonsFilePath, ObjectMapper objectMapper) {
+    public LessonServiceImpl(
+            @Qualifier("lessonPath")String lessonsFilePath,
+            ObjectMapper objectMapper) {
         this.lessonsFilePath = lessonsFilePath;
         this.objectMapper = objectMapper;
     }
 
-    public List<Lesson> getAllLessons() {
+    @Override
+    public List<Lesson> getAll() {
         List<Lesson> lessons;
         try (FileReader reader = new FileReader(lessonsFilePath)) {
             lessons = objectMapper.readValue(reader, new TypeReference<>() {
@@ -39,16 +44,17 @@ public class LessonService {
         return lessons;
     }
 
-
-    public Lesson getLessonById(int id) throws LessonNotFoundException {
-        List<Lesson> allLessons = getAllLessons();
+    @Override
+    public Lesson getById(Integer id) throws LessonNotFoundException {
+        List<Lesson> allLessons = getAll();
         Optional<Lesson> lesson = allLessons.stream().filter(ls -> ls.getId() == id).findAny();
         return lesson.orElseThrow(() -> new LessonNotFoundException("Урок с ID - " + id + " не найден"));
     }
 
-    public boolean deleteLessonById(int id) throws LessonNotFoundException {
+    @Override
+    public boolean deleteById(Integer id) throws LessonNotFoundException {
         try (FileWriter writer = new FileWriter(lessonsFilePath)) {
-            List<Lesson> collect = getAllLessons();
+            List<Lesson> collect = getAll();
 
             Optional<Lesson> any = collect.stream().filter(el -> el.getId() == id).findAny();
             if (any.isPresent()) {
@@ -63,8 +69,10 @@ public class LessonService {
         return false;
     }
 
-    public Lesson editLessonById(int id, Lesson l) throws LessonNotFoundException {
-        List<Lesson> lessonList = getAllLessons();
+    @Override
+
+    public Lesson editById(Integer id, Lesson l) throws LessonNotFoundException {
+        List<Lesson> lessonList = getAll();
         try (FileWriter writer = new FileWriter(lessonsFilePath)) {
             Optional<Lesson> any = lessonList.stream().filter(el -> el.getId() == id).findAny();
             Lesson lesson = any.orElseThrow(() -> new LessonNotFoundException("Урок с ID - " + id + " не найден"));
@@ -76,11 +84,12 @@ public class LessonService {
         } catch (IOException e) {
             System.out.println("Ошибка записи " + e.getMessage());
         }
-        return getLessonById(id);
+        return getById(id);
     }
 
-    public void addLesson(Lesson lesson) {
-        List<Lesson> allLessons = getAllLessons();
+    @Override
+    public void add(Lesson lesson) {
+        List<Lesson> allLessons = getAll();
         try (FileWriter writer = new FileWriter(lessonsFilePath)) {
             if (allLessons.isEmpty()) {
                 objectMapper.writeValue(writer, lesson);
@@ -93,8 +102,9 @@ public class LessonService {
         }
     }
 
+    @Override
     public List<Lesson> searchLessonByTopic(String topic) throws LessonNotFoundException {
-        List<Lesson> allLessons = getAllLessons();
+        List<Lesson> allLessons = getAll();
         if (allLessons.isEmpty()) {
             return Collections.emptyList();
         }

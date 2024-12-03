@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.exception.LessonNotFoundException;
 import org.example.model.Lesson;
+import org.example.service.LessonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -32,7 +33,7 @@ class LessonServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        service = new LessonService(path, objectMapper);
+        service = new LessonServiceImpl(path, objectMapper);
         initListAddTenLessons();
     }
 
@@ -40,7 +41,7 @@ class LessonServiceTest {
     void whenGetAllLessonsThenReturn10Lessons() throws IOException {
         initListAddTenLessons();
         mockGetAllLessons();
-        List<Lesson> sut = service.getAllLessons();
+        List<Lesson> sut = service.getAll();
         verify(objectMapper, times(1)).readValue(any(FileReader.class), any(TypeReference.class));
         assertEquals(list.size(), sut.size());
     }
@@ -48,17 +49,17 @@ class LessonServiceTest {
     @Test
     void whenGetAllLessonsAndThrowIOExceptionThenReturnEmptyList() throws IOException {
         when(objectMapper.readValue(any(FileReader.class), any(TypeReference.class))).thenThrow(IOException.class);
-        List<Lesson> sut = service.getAllLessons();
+        List<Lesson> sut = service.getAll();
         verify(objectMapper, times(1)).readValue(any(FileReader.class), any(TypeReference.class));
         assertEquals(Collections.emptyList(), sut);
     }
 
 
     @Test
-    void whenGetLessonByIdEqualsTwoThenReturnLessonWithIdEqualsTwo() throws IOException, LessonNotFoundException {
+    void whenGetLessonByIdEqualsTwoThenReturnLessonWithIdEqualsTwo() throws Exception {
         final int expectedId = 2;
         mockGetAllLessons();
-        Lesson lessonById = service.getLessonById(expectedId);
+        Lesson lessonById = service.getById(expectedId);
         assertEquals(expectedId, lessonById.getId());
     }
 
@@ -66,7 +67,7 @@ class LessonServiceTest {
     void whenGetLessonNotExistIdThenThrowLessonNotFoundException() throws IOException {
         final int expectedId = -1;
         mockGetAllLessons();
-        assertThrows(LessonNotFoundException.class, () -> service.getLessonById(expectedId));
+        assertThrows(LessonNotFoundException.class, () -> service.getById(expectedId));
     }
 
 
@@ -76,7 +77,7 @@ class LessonServiceTest {
         assertEquals(10, list.size());
         Lesson lesson = new Lesson(10, "Test", "DescriptionTest", Collections.emptyList(), "Java");
         doNothing().when(objectMapper).writeValue(any(FileWriter.class), anyList());
-        service.addLesson(lesson);
+        service.add(lesson);
         assertEquals(11, list.size());
     }
 
@@ -84,7 +85,7 @@ class LessonServiceTest {
     void whenAddLessonToEmptyList() throws IOException {
         when(objectMapper.readValue(any(FileReader.class), any(TypeReference.class))).thenReturn(Collections.emptyList());
         doNothing().when(objectMapper).writeValue(any(FileWriter.class), any(Lesson.class));
-        service.addLesson(new Lesson());
+        service.add(new Lesson());
         verify(objectMapper, times(1)).writeValue(any(FileWriter.class), any(Lesson.class));
     }
 
@@ -110,7 +111,7 @@ class LessonServiceTest {
     }
 
     @Test
-    void whenEditExistLessonThenThisLessonMustBeChange() throws IOException, LessonNotFoundException {
+    void whenEditExistLessonThenThisLessonMustBeChange() throws Exception {
         final int id = 1;
         Lesson updatedLesson = new Lesson(id, "newTitle", "newDescription", Collections.emptyList(), "Java");
         mockGetAllLessons();
@@ -121,12 +122,12 @@ class LessonServiceTest {
             return null;
         }).when(objectMapper).writeValue(any(FileWriter.class), anyList());
 
-        Lesson sut = service.editLessonById(id, updatedLesson);
+        Lesson sut = service.editById(id, updatedLesson);
         assertTrue(list.contains(sut));
     }
 
     @Test
-    void whenDeleteLessonWithExistId() throws IOException, LessonNotFoundException {
+    void whenDeleteLessonWithExistId() throws Exception {
         final int id = 1;
         mockGetAllLessons();
         doAnswer(invocation -> {
@@ -140,7 +141,7 @@ class LessonServiceTest {
             list.remove(lesson);
             return null;
         }).when(objectMapper).writeValue(any(FileWriter.class), anyList());
-        boolean sut = service.deleteLessonById(1);
+        boolean sut = service.deleteById(1);
         verify(objectMapper, times(1)).writeValue(any(FileWriter.class), anyList());
         assertEquals(9, list.size());
         assertTrue(sut);
@@ -149,7 +150,7 @@ class LessonServiceTest {
     @Test
     void whenDeleteLessonWithNotExistIdThenThrowLessonNotFoundException() throws IOException, LessonNotFoundException {
         mockGetAllLessons();
-        assertThrows(LessonNotFoundException.class, () -> service.deleteLessonById(-1));
+        assertThrows(LessonNotFoundException.class, () -> service.deleteById(-1));
     }
 
 

@@ -2,6 +2,7 @@ package org.example.gui;
 
 import org.example.gui.buttons.RoundedButton;
 import org.example.gui.textField.CustomTextField;
+import org.example.model.Lesson;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -11,6 +12,7 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 
 public class ChatBotGUI extends JPanel implements ActionListener {
 
@@ -63,10 +65,11 @@ public class ChatBotGUI extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String text = textField.getText();
         if (text != null && !text.isEmpty()) {
-            appendText(text, flag); // Левое выравнивание
+            appendText(text, false); // Левое выравнивание
             textField.setText(null);
             textPane.setCaretPosition(textPane.getDocument().getLength());
-            flag = flag ? false : true;
+            //flag = flag ? false : true;
+            appendText("То что выводит чат-бот", true);
         }
     }
 
