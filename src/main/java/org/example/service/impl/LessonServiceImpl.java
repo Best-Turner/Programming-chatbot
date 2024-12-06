@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 public class LessonServiceImpl implements LessonService {
 
     private final String lessonsFilePath;
-
     private final ObjectMapper objectMapper;
+
 
     @Autowired
     public LessonServiceImpl(
@@ -116,4 +116,14 @@ public class LessonServiceImpl implements LessonService {
                 .filter(lesson -> lesson.getTopic().equalsIgnoreCase(topic))
                 .collect(Collectors.toList());
     }
+
+    private void init() throws IOException {
+        List<Lesson> lessons = List.of(
+                new Lesson(1, "Заголовок1", "Описание1", "Привет1", "OOP"),
+                new Lesson(2, "Заголовок2", "Описание2", "Привет2", "Java")
+        );
+        objectMapper.writeValue(new FileWriter(lessonsFilePath), lessons);
+    }
+
+
 }

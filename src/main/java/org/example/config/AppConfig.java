@@ -1,6 +1,8 @@
 package org.example.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.service.LessonService;
+import org.example.service.impl.LessonServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +20,14 @@ public class AppConfig {
     @Value("${lessons.file.path}")
     private String lessonsFilePath;
 
-    @Value("${questions.file.path}")
-    private String questionFilePath;
+    @Value("${keywords.greeting.path}")
+    private String pathForGreetingWords;
+    @Value("${keywords.lesson.path}")
+    private String pathForKeywordsLesson;
+
+    @Value("${keywords.goodbye.path}")
+    private String pathForGoodbyeWords;
+
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -33,12 +41,25 @@ public class AppConfig {
     }
 
     @Bean
-    public String questionFilePath() {
-        return questionFilePath;
+    @Qualifier("pathForGreetingWords")
+    public String pathForGreetingWords() {
+        return pathForGreetingWords;
+    }
+    @Bean
+    @Qualifier("pathForKeywordsLesson")
+    public String pathForKeywordsLesson() {
+        return pathForKeywordsLesson;
+    }
+
+    @Bean
+    @Qualifier("pathForGoodbyeWords")
+    public String pathForGoodbyeWords() {
+        return pathForGoodbyeWords;
     }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
+
 }

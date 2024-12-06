@@ -75,7 +75,7 @@ class LessonServiceTest {
     void whenAddLessonToListThatAlreadyContainsLessonsThenSizeMustBeIncrease() throws IOException {
         mockGetAllLessons();
         assertEquals(10, list.size());
-        Lesson lesson = new Lesson(10, "Test", "DescriptionTest", Collections.emptyList(), "Java");
+        Lesson lesson = new Lesson(10, "Test", "DescriptionTest", "", "Java");
         doNothing().when(objectMapper).writeValue(any(FileWriter.class), anyList());
         service.add(lesson);
         assertEquals(11, list.size());
@@ -113,7 +113,7 @@ class LessonServiceTest {
     @Test
     void whenEditExistLessonThenThisLessonMustBeChange() throws Exception {
         final int id = 1;
-        Lesson updatedLesson = new Lesson(id, "newTitle", "newDescription", Collections.emptyList(), "Java");
+        Lesson updatedLesson = new Lesson(id, "newTitle", "newDescription", "", "Java");
         mockGetAllLessons();
         doAnswer(invocation -> {
             Lesson lesson = list.stream().filter(el -> el.getId() == id).findAny().get();
@@ -167,7 +167,7 @@ class LessonServiceTest {
         String topic;
         for (int i = 0; i < 10; i++) {
             topic = (i % 2 == 0) ? topicOop : topicStream;
-            list.add(new Lesson(i + 1 , "Title-" + i, "SomeDescription-" + i, Collections.singletonList("SomeContent"), topic));
+            list.add(new Lesson(i + 1 , "Title-" + i, "SomeDescription-" + i, "SomeContent", topic));
         }
     }
 
