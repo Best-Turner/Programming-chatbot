@@ -7,13 +7,13 @@ public class Lesson {
     private int id;
     private String title; // Название урока
     private String description; // Описание урока
-    private List<String> content; // Содержимое урока (может быть текст, ссылки и т.д.)
+    private String content; // Содержимое урока (может быть текст, ссылки и т.д.)
     private String topic; // Тематика урока (например, "Основы Java", "ООП" и т.д.)
 
     public Lesson() {
     }
 
-    public Lesson(int id, String title, String description, List<String> content, String topic) {
+    public Lesson(int id, String title, String description, String content, String topic) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -45,11 +45,11 @@ public class Lesson {
         this.description = description;
     }
 
-    public List<String> getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(List<String> content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
@@ -63,12 +63,10 @@ public class Lesson {
 
     @Override
     public String toString() {
-        return "Lesson{" +
-               "id=" + id +
-               ", title='" + title + '\'' +
-               ", description='" + description + '\'' +
-               ", content=" + content +
-               ", topic='" + topic + '\'' +
-               '}';
+        return "Урок № " + id +
+                "\n Заголовок - " + title +
+               "\nКраткое описание - " + description +
+               "\nТема - " + topic +
+               "\n Контент " + content;
     }
 }

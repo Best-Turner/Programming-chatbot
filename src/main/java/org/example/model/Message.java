@@ -2,37 +2,51 @@ package org.example.model;
 
 import java.time.LocalDateTime;
 
-public class ChatMessage {
+public class Message {
 
-    private String sender;
-    private String content;
+    public static final int STATUS_CODE_ZERO = 0;
+    public static final int STATUS_CODE_ONE = 1;
+    public static final int STATUS_CODE_TWO = 2;
+
+    private String id;
+    private String text;
+    private  int statusCode;
 
     private LocalDateTime dateTime;
 
 
-    public ChatMessage() {
+    public Message() {
     }
 
-    public ChatMessage(String sender, String content, LocalDateTime dateTime) {
-        this.sender = sender;
-        this.content = content;
+    public Message(String id, String test, int statusCode, LocalDateTime dateTime) {
+        this.id = id;
+        this.text = test;
+        this.statusCode = statusCode;
         this.dateTime = dateTime;
     }
 
-    public String getSender() {
-        return sender;
+    public String getId() {
+        return id;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public String getText() {
+        return text;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public LocalDateTime getDateTime() {
@@ -43,12 +57,12 @@ public class ChatMessage {
         this.dateTime = dateTime;
     }
 
-
     @Override
     public String toString() {
-        return "ChatMessage{" +
-               "sender='" + sender + '\'' +
-               ", content='" + content + '\'' +
+        return "Message{" +
+               "id='" + id + '\'' +
+               ", test='" + text + '\'' +
+               ", statusCode=" + statusCode +
                ", dateTime=" + dateTime +
                '}';
     }
