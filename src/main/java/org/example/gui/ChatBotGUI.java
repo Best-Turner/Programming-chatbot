@@ -1,8 +1,9 @@
 package org.example.gui;
 
+import org.example.exception.IncorrectInputException;
 import org.example.gui.buttons.RoundedButton;
 import org.example.gui.textField.CustomTextField;
-import org.example.model.Lesson;
+import org.example.service.impl.ChatBotService;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
@@ -12,11 +13,8 @@ import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 
 public class ChatBotGUI extends JPanel implements ActionListener {
-
-    private boolean flag = true;
 
     private JTextField textField;
     private JTextPane textPane;
@@ -24,10 +22,13 @@ public class ChatBotGUI extends JPanel implements ActionListener {
     private static final String BOT = "Чат-бот:\n";
     private static final String USER = "Вы:\n";
 
+    private static ChatBotService service;
 
-    public ChatBotGUI() {
+
+    public ChatBotGUI(ChatBotService service) {
         super(new GridBagLayout());
-
+        this.service = service;
+        //createAndShowGUI();
         setBackground(Color.LIGHT_GRAY);
         JButton button = new RoundedButton("Отправить");
         button.addActionListener(this);
@@ -68,11 +69,16 @@ public class ChatBotGUI extends JPanel implements ActionListener {
             appendText(text, false); // Левое выравнивание
             textField.setText(null);
             textPane.setCaretPosition(textPane.getDocument().getLength());
-            //flag = flag ? false : true;
-            appendText("То что выводит чат-бот", true);
+            try {
+                String response = service.getResponse(text);
+                appendText(response, true);
+            } catch (IncorrectInputException ex) {
+                appendText(ex.getMessage(), true);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
-
     private void appendText(String text, boolean alignLeft) {
 
         StyledDocument doc = textPane.getStyledDocument();
@@ -81,10 +87,10 @@ public class ChatBotGUI extends JPanel implements ActionListener {
         // Устанавливаем выравнивание
         StyleConstants.setAlignment(attrs, alignLeft ? StyleConstants.ALIGN_LEFT : StyleConstants.ALIGN_RIGHT);
         doc.setParagraphAttributes(doc.getLength(), 1, attrs, false);
-        String formattedText = lineBreak(text);
+        //String formattedText = lineBreak(text);
 
         try {
-            doc.insertString(doc.getLength(), (alignLeft ? BOT : USER).concat(formattedText) + NEW_LINE, null);
+            doc.insertString(doc.getLength(), (alignLeft ? BOT : USER).concat(text) + NEW_LINE, null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
@@ -119,7 +125,7 @@ public class ChatBotGUI extends JPanel implements ActionListener {
                     builder.append(ch);
                 }
             } else {
-                if (lastWordLength + word.length() > 15) {
+                if (lastWordLength + word.length() > 25) {
                     builder.append("\n");
                     builder.append(word).append(" ");
                     lastWordLength = word.length();
@@ -132,7 +138,7 @@ public class ChatBotGUI extends JPanel implements ActionListener {
         return builder.toString();
     }
 
-    public static void createAndShowGUI() {
+    public static void createAndShowGUI(ChatBotService service) {
         //Create and set up the window.
         JFrame frame = new JFrame("Чат бот");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,7 +146,7 @@ public class ChatBotGUI extends JPanel implements ActionListener {
         frame.setSize(300, 300);
 
         //Add contents to the window.
-        frame.add(new ChatBotGUI());
+        frame.add(new ChatBotGUI(service));
 
         //Display the window.
         frame.pack();
