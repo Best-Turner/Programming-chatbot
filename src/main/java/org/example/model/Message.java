@@ -10,7 +10,7 @@ public class Message {
 
     private String id;
     private String text;
-    private  int statusCode;
+    private int statusCode;
 
     private LocalDateTime dateTime;
 

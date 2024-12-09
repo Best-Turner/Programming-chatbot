@@ -17,7 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -154,7 +155,6 @@ class LessonServiceTest {
     }
 
 
-
     private void mockGetAllLessons() throws IOException {
         when(objectMapper.readValue(any(FileReader.class), any(TypeReference.class))).thenReturn(list);
     }
@@ -167,7 +167,7 @@ class LessonServiceTest {
         String topic;
         for (int i = 0; i < 10; i++) {
             topic = (i % 2 == 0) ? topicOop : topicStream;
-            list.add(new Lesson(i + 1 , "Title-" + i, "SomeDescription-" + i, "SomeContent", topic));
+            list.add(new Lesson(i + 1, "Title-" + i, "SomeDescription-" + i, "SomeContent", topic));
         }
     }
 

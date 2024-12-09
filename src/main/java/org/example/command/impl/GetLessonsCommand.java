@@ -7,10 +7,10 @@ import org.example.service.LessonService;
 
 import java.util.List;
 
-public class LessonsCommand implements Command {
+public class GetLessonsCommand implements Command {
     private final LessonService service;
 
-    public LessonsCommand(LessonService service) {
+    public GetLessonsCommand(LessonService service) {
         this.service = service;
     }
 

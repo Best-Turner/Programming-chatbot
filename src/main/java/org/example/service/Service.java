@@ -1,10 +1,8 @@
 package org.example.service;
 
-import org.example.exception.LessonNotFoundException;
-
 import java.util.List;
 
-public interface Service <E, T>{
+public interface Service<E, T> {
 
     List<E> getAll();
 

@@ -1,7 +1,5 @@
 package org.example.model;
 
-import java.util.List;
-
 public class Lesson {
 
     private int id;
@@ -64,7 +62,7 @@ public class Lesson {
     @Override
     public String toString() {
         return "Урок № " + id +
-                "\n Заголовок - " + title +
+               "\n Заголовок - " + title +
                "\nКраткое описание - " + description +
                "\nТема - " + topic +
                "\n Контент " + content;

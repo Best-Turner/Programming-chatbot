@@ -19,32 +19,36 @@ public class KeywordStorageImpl implements KeywordStorage {
     private final String pathForGreetingWords;
     private final String pathForKeywordsLesson;
     private final String pathForGoodbyeWords;
+    private final String pathToDeleteLesson;
+    private final ObjectMapper objectMapper;
+
     private Set<String> greetingWords;
     private Set<String> keywordsForLesson;
-    private Set<String> keywordsForQuestions;
     private Set<String> goodbyeWords;
+    private Set<String> keywordsDeleteLesson;
     private Map<Set<String>, Integer> statusCodeMap;
-    private final ObjectMapper objectMapper;
 
     @Autowired
     public KeywordStorageImpl(@Qualifier("pathForGreetingWords") String pathForGreetingWords,
                               @Qualifier("pathForKeywordsLesson") String pathForKeywordsLesson,
                               @Qualifier("pathForGoodbyeWords") String pathForGoodbyeWords,
+                              @Qualifier("deletePath") String pathToDeleteLesson,
                               ObjectMapper objectMapper) {
         this.pathForGreetingWords = pathForGreetingWords;
         this.pathForKeywordsLesson = pathForKeywordsLesson;
         this.pathForGoodbyeWords = pathForGoodbyeWords;
+        this.pathToDeleteLesson = pathToDeleteLesson;
         this.objectMapper = objectMapper;
         statusCodeMap = new HashMap<>();
         greetingWords = new HashSet<>();
         keywordsForLesson = new HashSet<>();
-        keywordsForQuestions = new HashSet<>();
         goodbyeWords = new HashSet<>();
+        keywordsDeleteLesson = new HashSet<>();
         initializeKeyWordsDatabase();
 
         statusCodeMap.put(greetingWords, 0);
         statusCodeMap.put(keywordsForLesson, 1);
-        statusCodeMap.put(keywordsForQuestions, 2);
+        statusCodeMap.put(keywordsDeleteLesson, 2);
         statusCodeMap.put(goodbyeWords, 3);
     }
 
@@ -71,6 +75,7 @@ public class KeywordStorageImpl implements KeywordStorage {
         initGreeting();
         initLessons();
         initGoodbye();
+        initDelete();
     }
 
     private void initGoodbye() {
@@ -95,6 +100,14 @@ public class KeywordStorageImpl implements KeywordStorage {
     private void initGreeting() {
         try (FileReader reader = new FileReader(pathForGreetingWords)) {
             greetingWords = objectMapper.readValue(reader, new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void initDelete() {
+        try (FileReader reader = new FileReader(pathToDeleteLesson)) {
+            keywordsDeleteLesson = objectMapper.readValue(reader, new TypeReference<>() {
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
