@@ -26,7 +26,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Autowired
     public LessonServiceImpl(
-            @Qualifier("lessonPath")String lessonsFilePath,
+            @Qualifier("lessonPath") String lessonsFilePath,
             ObjectMapper objectMapper) {
         this.lessonsFilePath = lessonsFilePath;
         this.objectMapper = objectMapper;
@@ -53,10 +53,9 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public boolean deleteById(Integer id) throws LessonNotFoundException {
+        List<Lesson> collect = getAll();
         try (FileWriter writer = new FileWriter(lessonsFilePath)) {
-            List<Lesson> collect = getAll();
-
-            Optional<Lesson> any = collect.stream().filter(el -> el.getId() == id).findAny();
+            Optional<Lesson> any = collect.stream().filter(el -> el.getId() == id).findFirst();
             if (any.isPresent()) {
                 collect.remove(any.get());
                 objectMapper.writeValue(writer, collect);
