@@ -113,4 +113,21 @@ public class KeywordStorageImpl implements KeywordStorage {
             throw new RuntimeException(e);
         }
     }
+
+
+    public Set<String> getGreetingWords() {
+        return greetingWords;
+    }
+
+    public Set<String> getKeywordsForLesson() {
+        return keywordsForLesson;
+    }
+
+    public Set<String> getGoodbyeWords() {
+        return goodbyeWords;
+    }
+
+    public Set<String> getKeywordsDeleteLesson() {
+        return keywordsDeleteLesson;
+    }
 }

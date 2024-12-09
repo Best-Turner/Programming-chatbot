@@ -87,8 +87,6 @@ public class ChatBotGUI extends JPanel implements ActionListener {
             try {
                 String response = service.getResponse(text);
                 appendText(response, true);
-            } catch (IncorrectInputException ex) {
-                appendText(ex.getMessage(), true);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

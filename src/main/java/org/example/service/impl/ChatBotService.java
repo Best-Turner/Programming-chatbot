@@ -1,17 +1,13 @@
 package org.example.service.impl;
 
-import org.example.command.Command;
-import org.example.command.impl.DeleteLessonByIdCommand;
-import org.example.command.impl.GetLessonsCommand;
-import org.example.command.impl.GreetCommand;
-import org.example.command.impl.LessonByIdCommand;
-import org.example.model.Message;
 import org.example.repository.KeywordStorage;
 import org.example.service.LessonService;
+import org.example.service.strategy.ResponseStrategy;
+import org.example.service.strategy.impl.DeleteStrategy;
+import org.example.service.strategy.impl.EditLessonStrategy;
+import org.example.service.strategy.impl.GreetingStrategy;
+import org.example.service.strategy.impl.LessonStrategy;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class ChatBotService {
@@ -23,81 +19,42 @@ public class ChatBotService {
     private static final int CODE_EDIT_LESSON = 3;
     private static final int CODE_GOODBYE = 4;
 
-    private int currentStatusCode = CODE_GREETING;
+    private static final String MESSAGE_ERROR_INPUT = "Неверная команда";
+    private ResponseStrategy strategy;
+    private int currentStatus = CODE_GREETING;
 
 
     public ChatBotService(KeywordStorage storageCommand, LessonService lessonService) {
         this.storageCommand = storageCommand;
         this.lessonService = lessonService;
+        strategy = new GreetingStrategy();
     }
 
 
-    public String getResponse(String input) throws Exception {
-        Command response = null;
-        Message message = processInput(input);
-        StringBuilder tempMessage;
-
-        if (currentStatusCode == CODE_GREETING) {
-            String[] words = input.split("\\s+");
-            int tempCode = storageCommand.getStatusCode(words[0]);
-
-            switch (tempCode) {
+    public String getResponse(String input) {
+        String[] words = input.split("\\s+");
+        int tempInputCode = storageCommand.getStatusCode(words[0]);
+        if (currentStatus != tempInputCode) {
+            switch (tempInputCode) {
                 case CODE_GREETING:
-                    response = new GreetCommand();
+                    this.setStrategy(new GreetingStrategy());
                     break;
                 case CODE_LESSONS:
-                    currentStatusCode = tempCode;
-                    response = new GetLessonsCommand(lessonService);
+                    this.setStrategy(new LessonStrategy(storageCommand, lessonService));
                     break;
                 case CODE_DELETE:
-                    tempMessage = new StringBuilder();
-                    tempMessage.append(new GetLessonsCommand(lessonService).execute(message))
-                            .append("\n")
-                            .append("Введите ID урока который хотите удалить");
-                    currentStatusCode = CODE_DELETE;
-                    return tempMessage.toString();
+                    this.setStrategy(new DeleteStrategy(storageCommand, lessonService));
+                    break;
                 case CODE_EDIT_LESSON:
-                    tempMessage = new StringBuilder();
-                    tempMessage.append(new GetLessonsCommand(lessonService).execute(message))
-                            .append("\n")
-                            .append("Введите ID урока который хотите изменить");
-                    currentStatusCode = CODE_EDIT_LESSON;
-                    return tempMessage.toString();
-                default: {
-                    return "команда не распознана";
-                }
+                    this.setStrategy(new EditLessonStrategy(storageCommand, lessonService));
+                    break;
             }
-
-        } else {
-            if (checkNumber(input)) {
-                switch (currentStatusCode) {
-                    case CODE_LESSONS:
-                        response = new LessonByIdCommand(lessonService);
-                        break;
-                    case CODE_DELETE:
-                        new DeleteLessonByIdCommand(lessonService);
-                        break;
-                }
-                currentStatusCode = CODE_GREETING;
-            } else {
-                return "Вы ввели не числовое значение";
-            }
+            currentStatus = tempInputCode;
         }
-
-        return response != null ? response.execute(message) : "Ошибка выполнения команды.";
+        return strategy != null ? strategy.response(input) : MESSAGE_ERROR_INPUT;
     }
 
-
-    private Message processInput(String input) {
-        Message message = new Message();
-        message.setId(UUID.randomUUID().toString());
-        message.setText(input);
-        message.setDateTime(LocalDateTime.now());
-        return message;
-    }
-
-
-    private boolean checkNumber(String input) {
-        return input.matches("\\d+");
+    public void setStrategy(ResponseStrategy strategy) {
+        this.strategy = strategy;
     }
 }
