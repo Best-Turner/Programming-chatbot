@@ -28,6 +28,8 @@ public class AppConfig {
 
     @Value("${keywords.delete.path}")
     private String pathForDeleteLesson;
+    @Value("${keywords.edit.path}")
+    private String pathForEditLesson;
 
 
     @Bean
@@ -38,7 +40,7 @@ public class AppConfig {
     @Bean
     @Qualifier("deletePath")
     public String pathForDeleteLesson() {
-        return  pathForDeleteLesson;
+        return pathForDeleteLesson;
     }
 
     @Bean
@@ -68,6 +70,12 @@ public class AppConfig {
     @Qualifier("pathForGoodbyeWords")
     public String pathForGoodbyeWords() {
         return pathForGoodbyeWords;
+    }
+
+    @Bean
+    @Qualifier("pathForEditLesson")
+    public String pathToEditLesson() {
+        return pathForEditLesson;
     }
 
 }
