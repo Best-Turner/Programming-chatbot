@@ -17,7 +17,6 @@ public class GreetingStrategy implements ResponseStrategy {
                 "Добро пожаловать! Чем я могу помочь тебе сегодня?",
                 "Здравствуйте!",
                 "Приветствую, мой друг!"
-
         );
     }
 
