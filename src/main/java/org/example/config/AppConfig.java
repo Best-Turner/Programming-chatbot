@@ -74,7 +74,7 @@ public class AppConfig {
 
     @Bean
     @Qualifier("pathForEditLesson")
-    public String pathToEditLesson() {
+    public String pathForEditLesson() {
         return pathForEditLesson;
     }
 
