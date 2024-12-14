@@ -11,15 +11,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ChatBotService {
-    private final KeywordStorage storageCommand;
-    private final LessonService lessonService;
     private static final int CODE_GREETING = 0;
     private static final int CODE_LESSONS = 1;
     private static final int CODE_DELETE = 2;
     private static final int CODE_EDIT_LESSON = 3;
-    //private static final int CODE_GOODBYE = 4;
-
     private static final String MESSAGE_ERROR_INPUT = "Неверная команда";
+    private final KeywordStorage storageCommand;
+    //private static final int CODE_GOODBYE = 4;
+    private final LessonService lessonService;
     private ResponseStrategy strategy;
     private int currentStatus = CODE_GREETING;
 

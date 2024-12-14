@@ -41,7 +41,7 @@ public class LessonStrategy implements ResponseStrategy {
             if (all.isEmpty()) {
                 return "~У ВАС НЕТ НИ ОДНОГО ДОСТУПНОГО УРОКА~";
             }
-            try (Formatter formatter = new Formatter(builder)){
+            try (Formatter formatter = new Formatter(builder)) {
                 all.forEach(el -> formatter.format("\tID (%d): %s; %s%n", el.getId(), el.getTitle(), el.getTopic()));
             }
         }

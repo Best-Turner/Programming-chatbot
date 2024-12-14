@@ -4,7 +4,6 @@ import org.example.model.Lesson;
 import org.example.service.LessonService;
 import org.example.service.strategy.ResponseStrategy;
 
-import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
 import java.util.Optional;

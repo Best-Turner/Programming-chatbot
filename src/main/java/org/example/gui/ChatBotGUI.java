@@ -1,6 +1,5 @@
 package org.example.gui;
 
-import org.example.exception.IncorrectInputException;
 import org.example.gui.buttons.RoundedButton;
 import org.example.gui.textField.CustomTextField;
 import org.example.service.impl.ChatBotService;

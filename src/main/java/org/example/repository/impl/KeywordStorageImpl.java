@@ -63,7 +63,8 @@ public class KeywordStorageImpl implements KeywordStorage {
 
     private void initDictionary(String path, Set<String> dictionary, int statusCode) {
         try (FileReader reader = new FileReader(path)) {
-            Set<String> loadedData = objectMapper.readValue(reader, new TypeReference<>() {});
+            Set<String> loadedData = objectMapper.readValue(reader, new TypeReference<>() {
+            });
             dictionary.addAll(loadedData);
             statusCodeMap.put(dictionary, statusCode);
         } catch (IOException e) {
