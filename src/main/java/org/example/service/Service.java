@@ -8,9 +8,9 @@ public interface Service<E, T> {
 
     List<E> getAll();
 
-    E getById(T t) throws Exception;
+    E getById(T t) throws LessonNotFoundException;
 
-    boolean deleteById(T t) throws Exception;
+    boolean deleteById(T t) throws LessonNotFoundException;
 
     void add(E e);
 
