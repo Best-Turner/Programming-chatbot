@@ -1,62 +1,60 @@
 package org.example.service.impl;
 
-import org.example.command.Command;
-import org.example.command.impl.GoodbyeCommand;
-import org.example.command.impl.GreetCommand;
-import org.example.command.impl.LessonsCommand;
-import org.example.model.Message;
 import org.example.repository.KeywordStorage;
 import org.example.service.LessonService;
+import org.example.service.strategy.ResponseStrategy;
+import org.example.service.strategy.impl.DeleteStrategy;
+import org.example.service.strategy.impl.EditLessonStrategy;
+import org.example.service.strategy.impl.GreetingStrategy;
+import org.example.service.strategy.impl.LessonStrategy;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class ChatBotService {
-    private final String errorMessage = "Не известная команда. Пожалуйста повторите";
-
     private final KeywordStorage storageCommand;
     private final LessonService lessonService;
+    private static final int CODE_GREETING = 0;
+    private static final int CODE_LESSONS = 1;
+    private static final int CODE_DELETE = 2;
+    private static final int CODE_EDIT_LESSON = 3;
+    //private static final int CODE_GOODBYE = 4;
+
+    private static final String MESSAGE_ERROR_INPUT = "Неверная команда";
+    private ResponseStrategy strategy;
+    private int currentStatus = CODE_GREETING;
 
 
     public ChatBotService(KeywordStorage storageCommand, LessonService lessonService) {
         this.storageCommand = storageCommand;
         this.lessonService = lessonService;
+        strategy = new GreetingStrategy();
     }
 
 
-    public String getResponse(String input) throws Exception {
-        Command response = null;
-        Message message = processInput(input);
+    public String getResponse(String input) {
         String[] words = input.split("\\s+");
-        int statusCode = storageCommand.getStatusCode(words[0]);
-
-        switch (statusCode) {
-            case 0:
-                response = new GreetCommand();
-                break;
-            case 1:
-                response = new LessonsCommand(lessonService);
-                break;
-            case 2:
-                //response = new QuestionCommand(questionService);
-                break;
-            case 3:
-                response = new GoodbyeCommand();
-                break;
-            default:
-                return "команда не распознана";
+        int tempInputCode = storageCommand.getStatusCode(words[0]);
+        if (currentStatus != tempInputCode) {
+            switch (tempInputCode) {
+                case CODE_GREETING:
+                    this.setStrategy(new GreetingStrategy());
+                    break;
+                case CODE_LESSONS:
+                    this.setStrategy(new LessonStrategy(storageCommand, lessonService));
+                    break;
+                case CODE_DELETE:
+                    this.setStrategy(new DeleteStrategy(lessonService));
+                    break;
+                case CODE_EDIT_LESSON:
+                    this.setStrategy(new EditLessonStrategy(lessonService));
+                    break;
+            }
+            currentStatus = tempInputCode;
         }
-        return response.execute(message);
+        return strategy != null ? strategy.response(input) : MESSAGE_ERROR_INPUT;
     }
 
-
-    private Message processInput(String input) {
-        Message message = new Message();
-        message.setId(UUID.randomUUID().toString());
-        message.setText(input);
-        message.setDateTime(LocalDateTime.now());
-        return message;
+    public void setStrategy(ResponseStrategy strategy) {
+        this.strategy = strategy;
     }
 }

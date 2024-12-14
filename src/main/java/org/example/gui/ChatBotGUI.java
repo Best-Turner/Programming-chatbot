@@ -16,13 +16,12 @@ import java.awt.event.ActionListener;
 
 public class ChatBotGUI extends JPanel implements ActionListener {
 
-    private JTextField textField;
-    private JTextPane textPane;
     private static final String NEW_LINE = "\n";
     private static final String BOT = "Чат-бот:\n";
     private static final String USER = "Вы:\n";
-
     private static ChatBotService service;
+    private JTextField textField;
+    private JTextPane textPane;
 
 
     public ChatBotGUI(ChatBotService service) {
@@ -62,6 +61,22 @@ public class ChatBotGUI extends JPanel implements ActionListener {
         add(button, c);
     }
 
+    public static void createAndShowGUI(ChatBotService service) {
+        //Create and set up the window.
+        JFrame frame = new JFrame("Чат бот");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.setSize(300, 300);
+
+        //Add contents to the window.
+        frame.add(new ChatBotGUI(service));
+
+        //Display the window.
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String text = textField.getText();
@@ -72,13 +87,12 @@ public class ChatBotGUI extends JPanel implements ActionListener {
             try {
                 String response = service.getResponse(text);
                 appendText(response, true);
-            } catch (IncorrectInputException ex) {
-                appendText(ex.getMessage(), true);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
     }
+
     private void appendText(String text, boolean alignLeft) {
 
         StyledDocument doc = textPane.getStyledDocument();
@@ -136,21 +150,5 @@ public class ChatBotGUI extends JPanel implements ActionListener {
             }
         }
         return builder.toString();
-    }
-
-    public static void createAndShowGUI(ChatBotService service) {
-        //Create and set up the window.
-        JFrame frame = new JFrame("Чат бот");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        frame.setSize(300, 300);
-
-        //Add contents to the window.
-        frame.add(new ChatBotGUI(service));
-
-        //Display the window.
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
     }
 }
