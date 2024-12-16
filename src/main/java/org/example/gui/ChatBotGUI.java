@@ -19,14 +19,13 @@ public class ChatBotGUI extends JPanel implements ActionListener {
     private static final String BOT = "Чат-бот:\n";
     private static final String USER = "Вы:\n";
     private static ChatBotService service;
-    private JTextField textField;
-    private JTextPane textPane;
+    JTextField textField;
+    JTextPane textPane;
 
 
     public ChatBotGUI(ChatBotService service) {
         super(new GridBagLayout());
         this.service = service;
-        //createAndShowGUI();
         setBackground(Color.LIGHT_GRAY);
         JButton button = new RoundedButton("Отправить");
         button.addActionListener(this);
@@ -100,54 +99,10 @@ public class ChatBotGUI extends JPanel implements ActionListener {
         // Устанавливаем выравнивание
         StyleConstants.setAlignment(attrs, alignLeft ? StyleConstants.ALIGN_LEFT : StyleConstants.ALIGN_RIGHT);
         doc.setParagraphAttributes(doc.getLength(), 1, attrs, false);
-        //String formattedText = lineBreak(text);
-
         try {
             doc.insertString(doc.getLength(), (alignLeft ? BOT : USER).concat(text) + NEW_LINE, null);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
-    }
-
-    private String lineBreak(String text) {
-
-        if (text.startsWith("http")) {
-            return text;
-        }
-
-        String[] split = text.split("\\s+");
-        if (split.length == 1 && split[0].length() < 10) {
-            return split[0];
-        }
-
-        StringBuilder builder = new StringBuilder();
-
-        int lastWordLength = 0;
-        for (int i = 0; i < split.length; i++) {
-            String word = split[i];
-            if (word.length() > 10) {
-                lastWordLength = word.length();
-                int counter = 0;
-                char[] charArray = word.toCharArray();
-                for (char ch : charArray) {
-                    if (counter % 10 == 0 && counter != 0 && counter + 2 < charArray.length) {
-                        builder.append(" - ");
-                        builder.append("\n");
-                    }
-                    counter++;
-                    builder.append(ch);
-                }
-            } else {
-                if (lastWordLength + word.length() > 25) {
-                    builder.append("\n");
-                    builder.append(word).append(" ");
-                    lastWordLength = word.length();
-                } else {
-                    builder.append(word).append(" ");
-                    lastWordLength += word.length();
-                }
-            }
-        }
-        return builder.toString();
     }
 }

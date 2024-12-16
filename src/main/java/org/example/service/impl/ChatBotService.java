@@ -17,7 +17,6 @@ public class ChatBotService {
     private static final int CODE_EDIT_LESSON = 3;
     private static final String MESSAGE_ERROR_INPUT = "Неверная команда";
     private final KeywordStorage storageCommand;
-    //private static final int CODE_GOODBYE = 4;
     private final LessonService lessonService;
     private ResponseStrategy strategy;
     private int currentStatus = CODE_GREETING;
@@ -39,7 +38,7 @@ public class ChatBotService {
                     this.setStrategy(new GreetingStrategy());
                     break;
                 case CODE_LESSONS:
-                    this.setStrategy(new LessonStrategy(storageCommand, lessonService));
+                    this.setStrategy(new LessonStrategy(lessonService));
                     break;
                 case CODE_DELETE:
                     this.setStrategy(new DeleteStrategy(lessonService));

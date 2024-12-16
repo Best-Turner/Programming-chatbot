@@ -1,5 +1,6 @@
 package org.example.service.strategy.impl;
 
+import org.example.exception.LessonNotFoundException;
 import org.example.model.Lesson;
 import org.example.service.LessonService;
 import org.example.service.strategy.ResponseStrategy;
@@ -32,7 +33,7 @@ public class DeleteStrategy implements ResponseStrategy {
                 all.forEach(lesson -> formatter.format("%nID (%d): %s, %s", lesson.getId(), lesson.getTitle(), lesson.getTopic()));
                 builder.append("\n~ВВЕДИТЕ ID УРОКА КОТОРЫЙ ХОТИТЕ УДАЛИТЬ~");
             }
-        } catch (Exception e) {
+        } catch (LessonNotFoundException e) {
             builder.append(e.getMessage());
         }
         return builder.toString();

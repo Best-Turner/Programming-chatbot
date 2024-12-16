@@ -7,7 +7,7 @@ import org.example.model.Lesson;
 import org.example.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -17,12 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+@Repository
 public class LessonServiceImpl implements LessonService {
-
     private final String lessonsFilePath;
     private final ObjectMapper objectMapper;
-
 
     @Autowired
     public LessonServiceImpl(
@@ -69,7 +67,6 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-
     public Lesson editById(Integer id, Lesson l) throws LessonNotFoundException {
         List<Lesson> lessonList = getAll();
         try (FileWriter writer = new FileWriter(lessonsFilePath)) {
@@ -115,14 +112,4 @@ public class LessonServiceImpl implements LessonService {
                 .filter(lesson -> lesson.getTopic().equalsIgnoreCase(topic))
                 .collect(Collectors.toList());
     }
-
-    private void init() throws IOException {
-        List<Lesson> lessons = List.of(
-                new Lesson(1, "Заголовок1", "Описание1", "Привет1", "OOP"),
-                new Lesson(2, "Заголовок2", "Описание2", "Привет2", "Java")
-        );
-        objectMapper.writeValue(new FileWriter(lessonsFilePath), lessons);
-    }
-
-
 }
