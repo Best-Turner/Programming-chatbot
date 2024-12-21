@@ -2,7 +2,7 @@
 <Configuration>
     <Appenders>
         <Console name="CONSOLE">
-            <PatternLayout pattern="%p - %m%n"/>
+            <PatternLayout pattern="%blue{%d} %c{1} %red{%t} %magenta{%p} - %yellow{%m}%n"/>
         </Console>
         <File name="MAIN" fileName="logs/main.log">
             <JsonTemplateLayout/>
