@@ -10,6 +10,5 @@ public class ChatBotApplication {
         var context = new AnnotationConfigApplicationContext(AppConfig.class);
 
         ChatBotGUI.createAndShowGUI(context.getBean(ChatBotService.class));
-
     }
 }

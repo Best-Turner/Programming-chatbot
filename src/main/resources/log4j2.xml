@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="CONSOLE">
+            <PatternLayout pattern="%blue{%d} %c{1} %red{%t} %magenta{%p} - %yellow{%m}%n"/>
+        </Console>
+        <File name="FILE" fileName="logs/debug.log" append="false">
+            <PatternLayout pattern="%d [%t] %p %c - %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <!--            <AppenderRef ref="CONSOLE" level="DEBUG"/>-->
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>

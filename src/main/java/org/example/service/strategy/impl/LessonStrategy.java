@@ -43,5 +43,4 @@ public class LessonStrategy implements ResponseStrategy {
         }
         return builder.toString();
     }
-
 }
